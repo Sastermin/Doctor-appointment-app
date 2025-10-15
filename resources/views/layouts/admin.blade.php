@@ -1,3 +1,5 @@
+@props(['breadcrumbs' => []])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -29,9 +31,11 @@
 
         <div class="p-4 sm:ml-64">
             <!-- Margin top 14px -->
-            <div class="mt-14"></div>
-                {{ $slot }}
+            <div class="mt-14 flex items-center justify-between w-full" ></div>
+            <div class="container mx-auto">
+                @include('layouts.includes.admin.breadcrumb')
             </div>
+            {{ $slot }}
         </div>
         @stack('modals')
 
