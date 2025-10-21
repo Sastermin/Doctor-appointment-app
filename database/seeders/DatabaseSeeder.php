@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +12,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        //LLamar al RoleSeeder creado
+        $this->call([
+            DatabaseSeeder::class
+        ]);
+        
 
+        //Crear un usuario de prueba cada que ejecuto migrations
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Rodrigo Gaxiola',
+            'email' => 'rodrigo@software.com.mx',
+            'password' => bcrypt('12345678'),
         ]);
     }
 }
