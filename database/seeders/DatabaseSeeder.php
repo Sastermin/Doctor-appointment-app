@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         //LLamar al RoleSeeder creado
         $this->call([
-            DatabaseSeeder::class
+            RoleSeeder::class
         ]);
         
 

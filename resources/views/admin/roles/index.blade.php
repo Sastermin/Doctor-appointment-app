@@ -8,4 +8,6 @@
         ],
     ]">
 
+  @livewire('admin.datatables.role-table')
+
 </x-admin-layout>
