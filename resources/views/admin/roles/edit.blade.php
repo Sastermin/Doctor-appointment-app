@@ -1,10 +1,14 @@
 <x-admin-layout title="Roles | Simify" :breadcrumbs="[
         [
           'name' => 'Dashboard', 
-          'route' => route('admin.dashboard')
+          'href' => route('admin.dashboard')
         ],
         [
           'name' => 'Roles'
+          'href' => route('admin.roles.index')
+        ],
+        [
+          'name' => 'Editar'
         ],
     ]">
 
