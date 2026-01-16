@@ -63,7 +63,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $roles = Role::all();
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
     /**
@@ -71,30 +72,34 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+        // Validar los datos
+        $data = $request->validate([
+            'name' => 'required|string|min:3|max:20',
+            'email' => 'required|string|email|unique:users, email,' . $user->id,
+            'password' => 'required|string|min:8|confirmed',
+            'id_number' => 'required|string|min:5|max:20|regex:/^[A-Za-z0-9\-]+$/|unique:users, id_number,' . $user->id,
+            'phone' => 'required|digits_between:7,15',
+            'address' => 'required|string|min:3|max:255',
+            'role_id' => 'required|exists:roles,id'
         ]);
 
-        // Si no hubo cambios
-        if ($user->name === $request->name && $user->email === $request->email) {
-            session()->flash('swal', [
-                'icon'  => 'info',
-                'title' => 'Sin cambios',
-                'text'  => 'No se detectaron modificaciones'
-            ]);
-            return redirect()->route('admin.users.edit', $user);
+        $user->update($data);
+
+        //Si el usuario quiere editar su contraseña, que lo guarde
+        if ($request->filled('password')) {
+            $user->password = bycrypt($request['password']);
+            $user->save();
         }
 
-        $user->update($request->only('name', 'email'));
+        $user->roles()->sync($data['role_id']);
 
         session()->flash('swal', [
             'icon'  => 'success',
             'title' => 'Usuario actualizado correctamente',
-            'text'  => 'Los datos del usuario fueron actualizados exitosamente'
+            'text'  => 'Los datos del usuario han sido actualizados exitosamente'
         ]);
-
-        return redirect()->route('admin.users.index');
+        
+        return redirect()->route('admin.users.edit', $user->id)->with('success', 'Usuario actualizado exitosamente.');
     }
 
     /**
