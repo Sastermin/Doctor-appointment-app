@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User; // 👈 usamos el modelo User
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -22,7 +23,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $roles = Role::all();
+        return view('admin.users.create', compact('roles'));
     }
 
     /**
@@ -31,27 +33,29 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // Validar los datos
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+        $data = $request->validate([
+            'name' => 'required|string|min:3|max:20',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'id_number' => 'required|string|min:5|max:20|regex:/^[A-Za-z0-9\-]+$/|unique:users',
+            'phone' => 'required|digits_between:7,15',
+            'address' => 'required|string|min:3|max:255',
+            'role_id' => 'required|exists:roles,id'
         ]);
 
-        // Crear el usuario
-        User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        
+        $user = User::create($data); 
 
-        // Alerta de éxito
+        $user->roles()->attach($data['role_id']);
+
+        
         session()->flash('swal', [
             'icon'  => 'success',
             'title' => 'Usuario creado correctamente',
             'text'  => 'El usuario ha sido registrado exitosamente'
         ]);
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
