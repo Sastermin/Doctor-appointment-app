@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -107,17 +108,16 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Evitar que un administrador se borre a sí mismo
-        if (auth()->id() === $user->id) {
-            session()->flash('swal', [
-                'icon'  => 'error',
-                'title' => 'Acción no permitida',
-                'text'  => 'No puedes eliminar tu propio usuario.'
-            ]);
-            return redirect()->route('admin.users.index');
+
+        //No permitir que un usuario se elimine a sí mismo
+        if (Auth::id() == $user->id) {
+            abort(403, 'No puedes eliminarte a ti mismo.');
         }
 
+        $user->roles()->detach();
+
         $user->delete();
+
 
         session()->flash('swal', [
             'icon'  => 'success',
@@ -125,7 +125,7 @@ class UserController extends Controller
             'text'  => 'El usuario ha sido eliminado exitosamente'
         ]);
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }
 
