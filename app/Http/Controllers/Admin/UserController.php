@@ -64,6 +64,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // No permitir que un usuario se edite a sí mismo
+        if (Auth::id() == $user->id) {
+            abort(403, 'No puedes editarte a ti mismo.');
+        }
+
         $roles = Role::all();
         return view('admin.users.edit', compact('user', 'roles'));
     }
