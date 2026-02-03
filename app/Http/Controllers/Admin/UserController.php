@@ -45,16 +45,23 @@ class UserController extends Controller
         ]);
 
         
-        $user = User::create($data); 
+        $user = User::create($data);
 
         $user->roles()->attach($data['role_id']);
 
-        
+
         session()->flash('swal', [
             'icon'  => 'success',
             'title' => 'Usuario creado correctamente',
             'text'  => 'El usuario ha sido registrado exitosamente'
         ]);
+
+        //Si se crea un paciente, envíame al módulo pacientes
+        if ($user::role('Paciente'))
+        {
+            $patiente = $user->patient()->create([]);
+            return redirect()->route('admin.patients.edit', $patiente);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
     }

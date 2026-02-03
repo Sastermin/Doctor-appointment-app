@@ -1,12 +1,11 @@
-<x-admin-layout title="Roles | Simify"
-:breadcrumbs="[
+<x-admin-layout title="Users | Simify" :breadcrumbs="[
     [
         'name' => 'Dashboard',
         'href' => route('admin.dashboard'),
     ],
     [
         'name' => 'Users',
-    ]
+    ],
 ]">
     <x-slot name="action">
         <x-wire-button blue href="{{ route('admin.users.create') }}">

@@ -13,10 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //LLamar al RoleSeeder creado
+        //LLamar al Seeder creado
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            BloodTypeSeeder::class,
 
         ]);
         
