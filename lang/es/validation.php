@@ -290,6 +290,8 @@ return [
         'family_history' => 'antecedentes familiares',
         'emergency_contact_name' => 'nombre del contacto de emergencia',
         'emergency_contact_phone' => 'teléfono del contacto de emergencia',
-        'emergency_contact_relationship' => 'relación del contacto'
+        'emergency_contact_relationship' => 'relación del contacto',
+        'speciality_id' => 'especialidad',
+        'medical_license_number' => 'número de licencia médica'
     ],
 ];
